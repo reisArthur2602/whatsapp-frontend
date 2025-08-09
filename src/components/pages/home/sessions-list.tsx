@@ -22,7 +22,7 @@ import { DialogGenerateQrCode } from "./dialog-generate-qrcode";
 import { DialogUpsertWebHook } from "./dialog-upsert-webhook";
 
 type Session = {
-  sessionId: string;
+  id: string;
   name: string;
   connected: boolean;
   webhookUrl: string | null;
@@ -33,7 +33,7 @@ export const SessionsList = () => {
     queryKey: ["get-sessions"],
     queryFn: getSessions,
   });
-
+console.log(sessions)
   return (
     <Card>
       <CardHeader>
@@ -55,7 +55,7 @@ export const SessionsList = () => {
           </TableHeader>
           <TableBody>
             {sessions?.map((session) => (
-              <TableRow key={session.sessionId}>
+              <TableRow key={session.id}>
                 <TableCell className="font-medium">{session.name}</TableCell>
                 <TableCell>
                   {session.connected ? "Conectado" : "Desconectado"}
@@ -63,9 +63,9 @@ export const SessionsList = () => {
 
                 <TableCell>
                   {session.webhookUrl ? (
-                    <Badge variant="outline">Configurado</Badge>
+                    <Badge>Configurado</Badge>
                   ) : (
-                    <Badge variant="secondary">Não configurado</Badge>
+                    <Badge variant="outline">Não configurado</Badge>
                   )}
                 </TableCell>
                 <TableCell>
@@ -73,7 +73,7 @@ export const SessionsList = () => {
                     {session.connected && (
                       <DialogUpsertWebHook
                         webhookUrl={session.webhookUrl}
-                        sessionId={session.sessionId}
+                        sessionId={session.id}
                       >
                         <Button size="sm" variant="outline">
                           <Link2Icon className="w-4 h-4" />
@@ -84,7 +84,7 @@ export const SessionsList = () => {
                     {!session.connected && (
                       <DialogGenerateQrCode
                         name={session.name}
-                        sessionId={session.sessionId}
+                        sessionId={session.id}
                       >
                         <Button size="sm" variant="outline">
                           <QrCode className="w-4 h-4" />

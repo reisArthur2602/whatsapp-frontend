@@ -8,12 +8,13 @@ import {
   DialogTitle,
 } from "../../ui/dialog";
 import { Button } from "../../ui/button";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { generateQrCode } from "../../../services/generate-qrcode";
 import { DialogTrigger } from "@radix-ui/react-dialog";
 import type { ReactNode } from "react";
 import { Skeleton } from "../../ui/skeleton";
 import { useState } from "react";
+import { refreshqrCode } from "../../../services/refresh-qrcode";
 
 type DialogGenerateQrCodeProps = {
   sessionId: string;
@@ -34,6 +35,14 @@ export const DialogGenerateQrCode = ({
     enabled: open,
     refetchOnWindowFocus: false,
   });
+
+  const refreshMutation = useMutation({
+  mutationFn: () => refreshqrCode({ sessionId }),
+  onSuccess: () => {
+    // Após o refresh bem-sucedido, refaz a query do QR code
+    refetch();
+  },
+});
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -79,9 +88,7 @@ export const DialogGenerateQrCode = ({
         </div>
         <DialogFooter className="flex justify-between">
           <Button
-            onClick={() => {
-              refetch();
-            }}
+             onClick={() => refreshMutation.mutate()}
             disabled={isFetching}
           >
             <RefreshCw className="w-4 h-4 mr-2" />

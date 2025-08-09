@@ -16,8 +16,8 @@ export const generateQrCode = async ({
   if (!response.ok) {
     throw new Error(`HTTP error! status: ${response.status}`);
   }
-
   const qrCode = await response.json();
+  console.log(qrCode)
 
   return qrCode;
 };
