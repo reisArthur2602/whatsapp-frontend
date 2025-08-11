@@ -56,90 +56,93 @@ export const SessionsList = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {sessions?.map((session) => (
-              <TableRow key={session.id}>
-                <TableCell className="font-medium">{session.name}</TableCell>
-                <TableCell>
-                  {session.connected ? "Conectado" : "Desconectado"}
-                </TableCell>
+            {sessions?.map((session) => {
+              const isConnected = session.connected;
+              return (
+                <TableRow key={session.id}>
+                  <TableCell className="font-medium">{session.name}</TableCell>
+                  <TableCell>
+                    {isConnected ? "Conectado" : "Desconectado"}
+                  </TableCell>
 
-                <TableCell>
-                  {session.webhookUrl ? (
-                    <Badge>Configurado</Badge>
-                  ) : (
-                    <Badge variant="outline">Não configurado</Badge>
-                  )}
-                </TableCell>
-                <TableCell>
-                  <div className="flex gap-2">
-                    {!session.connected ? (
-                      <GenerateQrCodeDialog
+                  <TableCell>
+                    {session.webhookUrl ? (
+                      <Badge>Configurado</Badge>
+                    ) : (
+                      <Badge variant="outline">Não configurado</Badge>
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex gap-2">
+                      {!isConnected ? (
+                        <GenerateQrCodeDialog
+                          name={session.name}
+                          sessionId={session.id}
+                        >
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            title="Gerar QRCode"
+                          >
+                            <QrCode className="w-4 h-4" />
+                          </Button>
+                        </GenerateQrCodeDialog>
+                      ) : (
+                        <>
+                          <UpsertWebHookDialog
+                            webhookUrl={session.webhookUrl}
+                            sessionId={session.id}
+                          >
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              title="Configurar qr-Code"
+                            >
+                              <Link className="w-4 h-4" />
+                            </Button>
+                          </UpsertWebHookDialog>
+
+                          <LogoutSessionAlertDialog sessionId={session.id}>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              title="Deslogar da sessão"
+                            >
+                              <LucideTabletSmartphone className="w-4 h-4" />
+                            </Button>
+                          </LogoutSessionAlertDialog>
+                        </>
+                      )}
+
+                      {!isConnected && (
+                        <DeleteSessionAlertDialog sessionId={session.id}>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            title="Deletar sessão"
+                          >
+                            <LucideTrash2 className="w-4 h-4" />
+                          </Button>
+                        </DeleteSessionAlertDialog>
+                      )}
+
+                      <ViewSessionDialog
                         name={session.name}
                         sessionId={session.id}
                       >
                         <Button
                           size="sm"
                           variant="outline"
-                          title="Gerar QRCode"
+                          title="Ver Session ID"
                         >
-                          <QrCode className="w-4 h-4" />
+                          <Copy className="w-4 h-4" />
                         </Button>
-                      </GenerateQrCodeDialog>
-                    ) : (
-                      <>
-                        <UpsertWebHookDialog
-                          webhookUrl={session.webhookUrl}
-                          sessionId={session.id}
-                        >
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            title="Configurar qr-Code"
-                          >
-                            <Link className="w-4 h-4" />
-                          </Button>
-                        </UpsertWebHookDialog>
-
-                        <LogoutSessionAlertDialog sessionId={session.id}>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            title="Deslogar da sessão"
-                          >
-                            <LucideTabletSmartphone className="w-4 h-4" />
-                          </Button>
-                        </LogoutSessionAlertDialog>
-                      </>
-                    )}
-
-                    {!session.connected && (
-                      <DeleteSessionAlertDialog sessionId={session.id}>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          title="Deletar sessão"
-                        >
-                          <LucideTrash2 className="w-4 h-4" />
-                        </Button>
-                      </DeleteSessionAlertDialog>
-                    )}
-
-                    <ViewSessionDialog
-                      name={session.name}
-                      sessionId={session.id}
-                    >
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        title="Ver Session ID"
-                      >
-                        <Copy className="w-4 h-4" />
-                      </Button>
-                    </ViewSessionDialog>
-                  </div>
-                </TableCell>
-              </TableRow>
-            ))}
+                      </ViewSessionDialog>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
           </TableBody>
         </Table>
       </CardContent>
