@@ -34,7 +34,7 @@ export const SessionsList = () => {
   const { data: sessions } = useQuery({
     queryKey: ["get-sessions"],
     queryFn: getSessions,
-    refetchInterval: 20000,
+    refetchInterval: 10000,
   });
 
   return (

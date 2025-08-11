@@ -10,7 +10,7 @@ createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <TanstackReactQuery>
       <Home />
-      <Toaster theme="dark" richColors />
+      <Toaster richColors />
     </TanstackReactQuery>
   </StrictMode>
 );

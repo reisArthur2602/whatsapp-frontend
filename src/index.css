@@ -3,7 +3,7 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* :root {
+:root {
   --background: oklch(0.9911 0 0);
   --foreground: oklch(0.2046 0 0);
   --card: oklch(0.9911 0 0);
@@ -55,9 +55,9 @@
   --shadow-2xl: 0px 1px 3px 0px hsl(0 0% 0% / 0.43);
   --tracking-normal: 0.025em;
   --spacing: 0.25rem;
-} */
+}
 
-:root  {
+:root {
   --background: oklch(0.1822 0 0);
   --foreground: oklch(0.9288 0.0126 255.5078);
   --card: oklch(0.2046 0 0);
