@@ -1,17 +1,16 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-
-import "./index.css";
-import Home from "./components/pages/home";
 import { Toaster } from "sonner";
-const queryClient = new QueryClient();
+import { TanstackReactQuery } from "./lib/tanstack-react-query";
+
+import Home from "./components/pages/home";
+import "./index.css";
+
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <QueryClientProvider client={queryClient}>
+    <TanstackReactQuery>
       <Home />
-      <Toaster />
-    </QueryClientProvider>
+      <Toaster theme="dark" richColors />
+    </TanstackReactQuery>
   </StrictMode>
 );

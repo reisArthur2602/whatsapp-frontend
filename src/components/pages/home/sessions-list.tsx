@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getSessions } from "../../../services/get-sessions";
+import { getSessions } from "../../../http/query/get-sessions";
 import {
   Card,
   CardContent,
@@ -17,23 +17,19 @@ import {
 } from "../../ui/table";
 import { Badge } from "../../ui/badge";
 import { Button } from "../../ui/button";
-import { Link2Icon,QrCode} from "lucide-react";
-import { DialogGenerateQrCode } from "./dialog-generate-qrcode";
-import { DialogUpsertWebHook } from "./dialog-upsert-webhook";
-
-type Session = {
-  id: string;
-  name: string;
-  connected: boolean;
-  webhookUrl: string | null;
-};
+import { Copy, Link, LucideTrash2, QrCode } from "lucide-react";
+import { UpsertWebHookDialog } from "./upsert-webhook-dialog";
+import { GenerateQrCodeDialog } from "./generate-qrcode-dialog";
+import { ViewSessionDialog } from "./dialog-view-session";
+import { DeleteSessionAlertDialog } from "./delete-session-alert-dialog";
 
 export const SessionsList = () => {
-  const { data: sessions } = useQuery<Session[] | []>({
+  const { data: sessions } = useQuery({
     queryKey: ["get-sessions"],
     queryFn: getSessions,
+    refetchInterval: 20000,
   });
-console.log(sessions)
+
   return (
     <Card>
       <CardHeader>
@@ -48,7 +44,6 @@ console.log(sessions)
             <TableRow>
               <TableHead>Nome</TableHead>
               <TableHead>Status</TableHead>
-
               <TableHead>Webhook</TableHead>
               <TableHead>Ações</TableHead>
             </TableRow>
@@ -70,26 +65,57 @@ console.log(sessions)
                 </TableCell>
                 <TableCell>
                   <div className="flex gap-2">
-                    {session.connected && (
-                      <DialogUpsertWebHook
-                        webhookUrl={session.webhookUrl}
-                        sessionId={session.id}
-                      >
-                        <Button size="sm" variant="outline">
-                          <Link2Icon className="w-4 h-4" />
-                        </Button>
-                      </DialogUpsertWebHook>
-                    )}
-
-                    {!session.connected && (
-                      <DialogGenerateQrCode
+                    {!session.connected ? (
+                      <GenerateQrCodeDialog
                         name={session.name}
                         sessionId={session.id}
                       >
-                        <Button size="sm" variant="outline">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          title="Gerar QRCode"
+                        >
                           <QrCode className="w-4 h-4" />
                         </Button>
-                      </DialogGenerateQrCode>
+                      </GenerateQrCodeDialog>
+                    ) : (
+                      <UpsertWebHookDialog
+                        webhookUrl={session.webhookUrl}
+                        sessionId={session.id}
+                      >
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          title="Configurar qr-Code"
+                        >
+                          <Link className="w-4 h-4" />
+                        </Button>
+                      </UpsertWebHookDialog>
+                    )}
+
+                    <ViewSessionDialog
+                      name={session.name}
+                      sessionId={session.id}
+                    >
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        title="Ver Session ID"
+                      >
+                        <Copy className="w-4 h-4" />
+                      </Button>
+                    </ViewSessionDialog>
+
+                    {!session.connected && (
+                      <DeleteSessionAlertDialog sessionId={session.id}>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          title="Deletar sessão"
+                        >
+                          <LucideTrash2 className="w-4 h-4" />
+                        </Button>
+                      </DeleteSessionAlertDialog>
                     )}
                   </div>
                 </TableCell>

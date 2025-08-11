@@ -24,8 +24,10 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "../../ui/button";
 import { toast } from "sonner";
-import { setWebhook } from "../../../services/set-webhook";
-import { useQueryClient } from "@tanstack/react-query";
+
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import type { AxiosError } from "axios";
+import { upsertWebhook } from "@/http/mutation/upsert-Webhook";
 
 const upsertWebhookSchema = z.object({
   webhookUrl: z.string().min(1, "A URL do webhook é obrigatória"),
@@ -33,17 +35,18 @@ const upsertWebhookSchema = z.object({
 
 type UpsertWebhook = z.infer<typeof upsertWebhookSchema>;
 
-type DialogUpsertWebHookProps = {
+type UpsertWebHookDialogProps = {
   sessionId: string;
   children: React.ReactNode;
   webhookUrl: string | null;
 };
 
-export const DialogUpsertWebHook = ({
+export const UpsertWebHookDialog = ({
   sessionId,
   children,
   webhookUrl,
-}: DialogUpsertWebHookProps) => {
+}: UpsertWebHookDialogProps) => {
+  const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
   const methods = useForm<UpsertWebhook>({
     resolver: zodResolver(upsertWebhookSchema),
@@ -51,28 +54,31 @@ export const DialogUpsertWebHook = ({
       webhookUrl: webhookUrl || "",
     },
   });
-  const queryClient = useQueryClient();
+
   const isEditing = !!webhookUrl;
 
+  const { mutateAsync: upsertWebhookFn } = useMutation({
+    mutationFn: upsertWebhook,
+    onSuccess: () => {
+      toast.success(
+        isEditing
+          ? "Webhook atualizado com sucesso!"
+          : "Webhook configurado com sucesso!"
+      );
+      queryClient.invalidateQueries({ queryKey: ["get-sessions"] });
+      setOpen(false);
+    },
+    onError: (error: AxiosError<ErrorResponse>) => {
+      const message = error.response?.data?.message;
+      toast.error(message);
+    },
+  });
+
   const handleUpsertWebhook = async (data: UpsertWebhook) => {
-    const { success } = await setWebhook({
+    await upsertWebhookFn({
       sessionId,
       webhookUrl: data.webhookUrl,
     });
-    if (!success) {
-      return toast.error(
-        isEditing ? "Erro ao atualizar webhook" : "Erro ao configurar webhook"
-      );
-    }
-
-    toast.success(
-      isEditing
-        ? "Webhook atualizado com sucesso!"
-        : "Webhook configurado com sucesso!"
-    );
-    queryClient.invalidateQueries({ queryKey: ["get-sessions"] });
-    methods.reset();
-    setOpen(false);
   };
 
   return (

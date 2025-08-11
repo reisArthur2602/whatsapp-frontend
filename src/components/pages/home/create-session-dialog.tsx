@@ -23,9 +23,10 @@ import { Input } from "../../ui/input";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "../../ui/button";
-import { createSession } from "../../../services/create-session";
+import { createSession } from "../../../http/mutation/create-session";
 import { toast } from "sonner";
-import { useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import type { AxiosError } from "axios";
 
 const createSessionSchema = z.object({
   name: z.string().min(1, "O nome da sessão é obrigatório"),
@@ -33,24 +34,32 @@ const createSessionSchema = z.object({
 
 type CreateSession = z.infer<typeof createSessionSchema>;
 
-export const DialogCreateSession = ({ children }: PropsWithChildren) => {
+export const CreateSessionDialog = ({ children }: PropsWithChildren) => {
   const [open, setOpen] = useState(false);
+  const queryClient = useQueryClient();
+
   const methods = useForm<CreateSession>({
     resolver: zodResolver(createSessionSchema),
     defaultValues: {
       name: "",
     },
   });
-  const queryClient = useQueryClient();
+
+  const { mutateAsync: createSessionFn } = useMutation({
+    mutationFn: createSession,
+    onSuccess: () => {
+      methods.reset();
+      queryClient.invalidateQueries({ queryKey: ["get-sessions"] });
+      setOpen(false);
+    },
+    onError: (error: AxiosError<ErrorResponse>) => {
+      const message = error.response?.data?.message;
+      toast.error(message);
+    },
+  });
 
   const handleCreateSession = async (data: CreateSession) => {
-    const { success } = await createSession({ name: data.name });
-    if (!success) return toast.error("Erro ao criar sessão");
-
-    toast.success("Sessão criada com sucesso!");
-    queryClient.invalidateQueries({ queryKey: ["get-sessions"] });
-    methods.reset();
-    setOpen(false);
+    await createSessionFn({ name: data.name });
   };
 
   return (
@@ -58,9 +67,9 @@ export const DialogCreateSession = ({ children }: PropsWithChildren) => {
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Criar Nova Sessão</DialogTitle>
+          <DialogTitle>Nova Sessão</DialogTitle>
           <DialogDescription>
-            Crie uma nova instância de sessão WhatsApp
+            Crie uma nova sessão do WhatsApp
           </DialogDescription>
         </DialogHeader>
 
