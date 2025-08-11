@@ -1,9 +1,9 @@
-import axios from "axios";
+import axiosClient from "@/lib/axios";
 
 type CreateSessionProps = {
   name: string;
 };
 
 export const createSession = async ({ name }: CreateSessionProps) => {
-  await axios.post("http://localhost:3000/session", { name:name });
+  await axiosClient.post("/session", { namee:name });
 };

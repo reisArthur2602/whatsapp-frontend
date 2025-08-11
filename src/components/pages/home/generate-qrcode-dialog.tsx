@@ -15,7 +15,6 @@ import type { ReactNode } from "react";
 import { Skeleton } from "../../ui/skeleton";
 import { useState } from "react";
 import { refreshQrCode } from "@/http/mutation/refresh-qrcode";
-import type { AxiosError } from "axios";
 import { toast } from "sonner";
 
 type DialogGenerateQrCodeProps = {
@@ -39,9 +38,8 @@ export const GenerateQrCodeDialog = ({
   const { mutateAsync: refreshQrCodeFn } = useMutation({
     mutationFn: refreshQrCode,
     onSuccess: () => refetch(),
-    onError: (error: AxiosError<ErrorResponse>) => {
-      const message = error.response?.data?.message;
-      toast.error(message);
+    onError: (error: ErrorResponse) => {
+      toast.error(error.message);
     },
   });
 

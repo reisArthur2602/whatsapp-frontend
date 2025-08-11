@@ -1,4 +1,4 @@
-import axios from "axios";
+import axiosClient from "@/lib/axios";
 
 type UpsertWebhookProps = {
   sessionId: string;
@@ -9,7 +9,7 @@ export const upsertWebhook = async ({
   sessionId,
   webhookUrl,
 }: UpsertWebhookProps) => {
-  await axios.post("http://localhost:3000/set-webhook", {
+  await axiosClient.post("/set-webhook", {
     sessionId,
     webhookUrl,
   });

@@ -26,7 +26,6 @@ import { Button } from "../../ui/button";
 import { createSession } from "../../../http/mutation/create-session";
 import { toast } from "sonner";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import type { AxiosError } from "axios";
 
 const createSessionSchema = z.object({
   name: z.string().min(1, "O nome da sessão é obrigatório"),
@@ -52,9 +51,8 @@ export const CreateSessionDialog = ({ children }: PropsWithChildren) => {
       queryClient.invalidateQueries({ queryKey: ["get-sessions"] });
       setOpen(false);
     },
-    onError: (error: AxiosError<ErrorResponse>) => {
-      const message = error.response?.data?.message;
-      toast.error(message);
+    onError: (error: ErrorResponse) => {
+      toast.error(error.message);
     },
   });
 

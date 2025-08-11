@@ -1,4 +1,4 @@
-import axios from "axios";
+import axiosClient from "@/lib/axios";
 
 type Session = {
   id: string;
@@ -8,8 +8,6 @@ type Session = {
 };
 
 export const getSessions = async () => {
-  const sessions = (
-    await axios.get<Session[] | []>("http://localhost:3000/sessions")
-  ).data;
+  const sessions = (await axiosClient<Session[] | []>("/sessions")).data;
   return sessions;
 };

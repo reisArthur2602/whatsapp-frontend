@@ -26,7 +26,7 @@ import { Button } from "../../ui/button";
 import { toast } from "sonner";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import type { AxiosError } from "axios";
+
 import { upsertWebhook } from "@/http/mutation/upsert-Webhook";
 
 const upsertWebhookSchema = z.object({
@@ -68,9 +68,8 @@ export const UpsertWebHookDialog = ({
       queryClient.invalidateQueries({ queryKey: ["get-sessions"] });
       setOpen(false);
     },
-    onError: (error: AxiosError<ErrorResponse>) => {
-      const message = error.response?.data?.message;
-      toast.error(message);
+    onError: (error: ErrorResponse) => {
+      toast.error(error.message);
     },
   });
 

@@ -1,4 +1,4 @@
-import axios from "axios";
+import axiosClient from "@/lib/axios";
 
 type GenerateQrCodeProps = {
   sessionId: string;
@@ -9,8 +9,6 @@ type QrCodeResponse = {
 };
 
 export const generateQrCode = async ({ sessionId }: GenerateQrCodeProps) => {
-  const qrCode = (await axios.get<QrCodeResponse>(`http://localhost:3000/qr/${sessionId}`)).data
+  const qrCode = (await axiosClient<QrCodeResponse>(`/qr/${sessionId}`)).data;
   return qrCode;
 };
-
-

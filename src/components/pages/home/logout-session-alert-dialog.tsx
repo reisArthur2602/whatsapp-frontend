@@ -9,34 +9,38 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { deleteSession } from "@/http/mutation/delete-session";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { logoutSession } from "@/http/mutation/logout-session";
 
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { ReactNode } from "react";
 import { toast } from "sonner";
 
-type DeleteSessionAlertDialogProps = {
+type LogoutSessionAlertDialogProps = {
   sessionId: string;
   children: ReactNode;
 };
-export const DeleteSessionAlertDialog = ({
+
+export const LogoutSessionAlertDialog = ({
   sessionId,
   children,
-}: DeleteSessionAlertDialogProps) => {
+}: LogoutSessionAlertDialogProps) => {
   const queryClient = useQueryClient();
 
-  const { isPending, mutateAsync: deleteSessionFn } = useMutation({
-    mutationFn: deleteSession,
+  const { isPending, mutateAsync: logoutSessionFn } = useMutation({
+    mutationFn: logoutSession,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["get-sessions"] });
+      toast.success(
+        "Sessão desconectada com sucesso. Escaneie o novo QR Code para reconectar."
+      );
     },
     onError: (error: ErrorResponse) => {
       toast.error(error.message);
     },
   });
 
-  const handleDeleteSession = async () => {
-    await deleteSessionFn({ sessionId });
+  const handleLogoutSession = async () => {
+    await logoutSessionFn({ sessionId });
   };
 
   return (
@@ -44,18 +48,17 @@ export const DeleteSessionAlertDialog = ({
       <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>
-            Você tem certeza que deseja deletar esta sessão?
-          </AlertDialogTitle>
+          <AlertDialogTitle>Confirmar desconexão da sessão</AlertDialogTitle>
           <AlertDialogDescription>
-            Esta ação é irreversível e removerá permanentemente a sessão do
-            WhatsApp, incluindo todas as suas credenciais.
+            Você está prestes a desconectar esta sessão do WhatsApp. Isso vai
+            liberar o uso em outro celular. Após confirmar, será gerado um novo
+            QR Code para reconexão.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancelar</AlertDialogCancel>
-          <AlertDialogAction onClick={handleDeleteSession} disabled={isPending}>
-            Deletar sessão
+          <AlertDialogAction onClick={handleLogoutSession} disabled={isPending}>
+            Desconectar sessão
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

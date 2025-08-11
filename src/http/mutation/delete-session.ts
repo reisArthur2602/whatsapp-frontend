@@ -1,9 +1,9 @@
-import axios from "axios";
+import axiosClient from "@/lib/axios";
 
 type DeleteSessionProps = {
   sessionId: string;
 };
 
 export const deleteSession = async ({ sessionId }: DeleteSessionProps) => {
-  await axios.delete(`http://localhost:3000/session/${sessionId}`);
+  await axiosClient.delete(`/session/${sessionId}`);
 };

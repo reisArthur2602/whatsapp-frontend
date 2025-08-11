@@ -17,11 +17,18 @@ import {
 } from "../../ui/table";
 import { Badge } from "../../ui/badge";
 import { Button } from "../../ui/button";
-import { Copy, Link, LucideTrash2, QrCode } from "lucide-react";
+import {
+  Copy,
+  Link,
+  LucideTabletSmartphone,
+  LucideTrash2,
+  QrCode,
+} from "lucide-react";
 import { UpsertWebHookDialog } from "./upsert-webhook-dialog";
 import { GenerateQrCodeDialog } from "./generate-qrcode-dialog";
 import { ViewSessionDialog } from "./dialog-view-session";
 import { DeleteSessionAlertDialog } from "./delete-session-alert-dialog";
+import { LogoutSessionAlertDialog } from "./logout-session-alert-dialog";
 
 export const SessionsList = () => {
   const { data: sessions } = useQuery({
@@ -79,18 +86,42 @@ export const SessionsList = () => {
                         </Button>
                       </GenerateQrCodeDialog>
                     ) : (
-                      <UpsertWebHookDialog
-                        webhookUrl={session.webhookUrl}
-                        sessionId={session.id}
-                      >
+                      <>
+                        <UpsertWebHookDialog
+                          webhookUrl={session.webhookUrl}
+                          sessionId={session.id}
+                        >
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            title="Configurar qr-Code"
+                          >
+                            <Link className="w-4 h-4" />
+                          </Button>
+                        </UpsertWebHookDialog>
+
+                        <LogoutSessionAlertDialog sessionId={session.id}>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            title="Deslogar da sessão"
+                          >
+                            <LucideTabletSmartphone className="w-4 h-4" />
+                          </Button>
+                        </LogoutSessionAlertDialog>
+                      </>
+                    )}
+
+                    {!session.connected && (
+                      <DeleteSessionAlertDialog sessionId={session.id}>
                         <Button
                           size="sm"
                           variant="outline"
-                          title="Configurar qr-Code"
+                          title="Deletar sessão"
                         >
-                          <Link className="w-4 h-4" />
+                          <LucideTrash2 className="w-4 h-4" />
                         </Button>
-                      </UpsertWebHookDialog>
+                      </DeleteSessionAlertDialog>
                     )}
 
                     <ViewSessionDialog
@@ -105,18 +136,6 @@ export const SessionsList = () => {
                         <Copy className="w-4 h-4" />
                       </Button>
                     </ViewSessionDialog>
-
-                    {!session.connected && (
-                      <DeleteSessionAlertDialog sessionId={session.id}>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          title="Deletar sessão"
-                        >
-                          <LucideTrash2 className="w-4 h-4" />
-                        </Button>
-                      </DeleteSessionAlertDialog>
-                    )}
                   </div>
                 </TableCell>
               </TableRow>
