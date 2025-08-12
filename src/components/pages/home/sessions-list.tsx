@@ -69,7 +69,7 @@ export const SessionsList = () => {
                     {session.webhookUrl ? (
                       <Badge>Configurado</Badge>
                     ) : (
-                      <Badge variant="outline">Não configurado</Badge>
+                      <Badge variant="secondary">Não configurado</Badge>
                     )}
                   </TableCell>
                   <TableCell>

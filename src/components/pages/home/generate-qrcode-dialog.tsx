@@ -33,6 +33,7 @@ export const GenerateQrCodeDialog = ({
   const { data, isLoading, refetch, isFetching } = useQuery({
     queryKey: ["qrcode", sessionId],
     queryFn: () => generateQrCode({ sessionId }),
+    enabled: open,
   });
 
   const { mutateAsync: refreshQrCodeFn } = useMutation({
