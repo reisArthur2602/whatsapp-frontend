@@ -2,18 +2,19 @@
 import axios from "axios";
 
 const axiosClient = axios.create({
-    baseURL: import.meta.env.VITE_API_URL as string,
+  baseURL: import.meta.env.VITE_API_URL as string,
 });
 
 axiosClient.interceptors.response.use(
   (response) => response,
   (error) => {
-    const message =
-      error.response?.data?.message ||
-      error.message ||
-      "Erro desconhecido na requisição";
+    // se a API retornar um array de erros, pega ele; senão, cria padrão
+    const errorData = error.response?.data?.error ?? [
+      { message: error.response?.data?.message ?? "Erro desconhecido" },
+    ];
 
-    return Promise.reject(new Error(message));
+    // rejeita com o objeto completo
+    return Promise.reject(errorData);
   }
 );
 

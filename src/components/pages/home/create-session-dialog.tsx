@@ -52,7 +52,7 @@ export const CreateSessionDialog = ({ children }: PropsWithChildren) => {
       setOpen(false);
     },
     onError: (error: ErrorResponse) => {
-      toast.error(error.message);
+      error.map((err) => toast.error(err.message));
     },
   });
 

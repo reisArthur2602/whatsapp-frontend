@@ -69,7 +69,7 @@ export const UpsertWebHookDialog = ({
       setOpen(false);
     },
     onError: (error: ErrorResponse) => {
-      toast.error(error.message);
+      error.map((err) => toast.error(err.message));
     },
   });
 

@@ -31,7 +31,7 @@ export const DeleteSessionAlertDialog = ({
       queryClient.invalidateQueries({ queryKey: ["get-sessions"] });
     },
     onError: (error: ErrorResponse) => {
-      toast.error(error.message);
+      error.map((err) => toast.error(err.message));
     },
   });
 

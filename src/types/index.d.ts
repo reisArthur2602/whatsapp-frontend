@@ -1,3 +1,1 @@
-type ErrorResponse = {
-  message: string;
-};
+type ErrorResponse = { message: string }[] | [];
