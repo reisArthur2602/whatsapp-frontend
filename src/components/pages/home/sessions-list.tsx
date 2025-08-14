@@ -42,7 +42,7 @@ export const SessionsList = () => {
       <CardHeader>
         <CardTitle>Sessões Ativas</CardTitle>
         <CardDescription>
-          {sessions?.length} sessão(ões) encontrada(s)
+          {sessions?.length ?? 0} sessão(ões) encontrada(s)
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -52,6 +52,7 @@ export const SessionsList = () => {
               <TableHead>Nome</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Webhook</TableHead>
+              <TableHead>Última Atualização</TableHead>
               <TableHead>Ações</TableHead>
             </TableRow>
           </TableHeader>
@@ -62,18 +63,36 @@ export const SessionsList = () => {
                 <TableRow key={session.id}>
                   <TableCell className="font-medium">{session.name}</TableCell>
                   <TableCell>
-                    {isConnected ? "Conectado" : "Desconectado"}
-                  </TableCell>
-
-                  <TableCell>
-                    {session.webhookUrl ? (
-                      <Badge>Configurado</Badge>
+                    {isConnected ? (
+                      <span className="text-green-600 font-semibold">
+                        Online
+                      </span>
                     ) : (
-                      <Badge variant="secondary">Não configurado</Badge>
+                      <span className="text-red-600 font-semibold">
+                        Offline
+                      </span>
                     )}
                   </TableCell>
                   <TableCell>
-                    <div className="flex gap-2">
+                    {session.onReceive_webhookUrl ||
+                    session.onSend_webhookUrl ||
+                    session.onUpdateStatus_webhookUrl ? (
+                      <Badge variant="secondary">Conectado</Badge>
+                    ) : (
+                      <Badge variant="outline">Desconectado</Badge>
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    {new Date(session.updated_at).toLocaleString("pt-BR", {
+                      day: "2-digit",
+                      month: "2-digit",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      hour12: false,
+                    })}
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex gap-2 flex-wrap">
                       {!isConnected ? (
                         <GenerateQrCodeDialog
                           name={session.name}
@@ -90,13 +109,17 @@ export const SessionsList = () => {
                       ) : (
                         <>
                           <UpsertWebHookDialog
-                            webhookUrl={session.webhookUrl}
+                            onReceive_webhookUrl={session.onReceive_webhookUrl}
+                            onSend_webhookUrl={session.onSend_webhookUrl}
+                            onUpdateStatus_webhookUrl={
+                              session.onUpdateStatus_webhookUrl
+                            }
                             sessionId={session.id}
                           >
                             <Button
                               size="sm"
                               variant="outline"
-                              title="Configurar qr-Code"
+                              title="Configurar Webhook"
                             >
                               <Link className="w-4 h-4" />
                             </Button>

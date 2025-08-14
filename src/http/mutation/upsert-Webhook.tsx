@@ -2,19 +2,23 @@ import axiosClient from "@/lib/axios";
 
 type UpsertWebhookProps = {
   sessionId: string;
-  webhookUrl: string;
+  onReceive_webhookUrl?: string;
+  onSend_webhookUrl?: string;
+  onUpdateStatus_webhookUrl?: string;
 };
 
 export const upsertWebhook = async ({
   sessionId,
-  webhookUrl,
+  onReceive_webhookUrl,
+  onSend_webhookUrl,
+  onUpdateStatus_webhookUrl,
 }: UpsertWebhookProps) => {
   await axiosClient.patch(
     "/webhook",
-    { webhookUrl }, 
+    { onReceive_webhookUrl, onSend_webhookUrl, onUpdateStatus_webhookUrl },
     {
       headers: {
-        Authorization: sessionId, 
+        Authorization: sessionId,
       },
     }
   );
