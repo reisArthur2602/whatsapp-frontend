@@ -27,7 +27,7 @@ import { toast } from "sonner";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-import { upsertWebhook } from "@/http/mutation/upsert-Webhook";
+import { upsertWebhook } from "@/http/mutation/upsert-webhook";
 
 const upsertWebhookSchema = z.object({
   webhookUrl: z.string().min(1, "A URL do webhook é obrigatória"),

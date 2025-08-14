@@ -5,5 +5,5 @@ type CreateSessionProps = {
 };
 
 export const createSession = async ({ name }: CreateSessionProps) => {
-  await axiosClient.post("/session", { name });
+  await axiosClient.post("/", { name });
 };

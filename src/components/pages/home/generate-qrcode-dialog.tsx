@@ -81,7 +81,7 @@ export const GenerateQrCodeDialog = ({
 
         <DialogFooter className="flex justify-between">
           <Button onClick={handleRefreshQrCode} disabled={isFetching}>
-            <RefreshCw />
+            <RefreshCw className={isFetching ? "animate-spin" : ""} />
             {isFetching ? "Gerando..." : "Gerar Novo "}
           </Button>
         </DialogFooter>

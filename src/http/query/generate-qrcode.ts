@@ -9,6 +9,12 @@ type QrCodeResponse = {
 };
 
 export const generateQrCode = async ({ sessionId }: GenerateQrCodeProps) => {
-  const qrCode = (await axiosClient<QrCodeResponse>(`/qr/${sessionId}`)).data;
+  const qrCode = (
+    await axiosClient.get<QrCodeResponse>('/qr', {
+      headers: {
+        Authorization: sessionId,
+      },
+    })
+  ).data;
   return qrCode;
 };

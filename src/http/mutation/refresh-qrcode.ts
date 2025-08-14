@@ -5,7 +5,13 @@ type RefreshQrCodeProps = {
 };
 
 export const refreshQrCode = async ({ sessionId }: RefreshQrCodeProps) => {
-  await axiosClient.post("/session/refresh-qrcode", {
-    sessionId,
-  });
+  await axiosClient.patch(
+    "/qr/refresh",
+    {},
+    {
+      headers: {
+        Authorization: sessionId,
+      },
+    }
+  );
 };

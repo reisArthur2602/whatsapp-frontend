@@ -5,5 +5,9 @@ type DeleteSessionProps = {
 };
 
 export const deleteSession = async ({ sessionId }: DeleteSessionProps) => {
-  await axiosClient.delete(`/session/${sessionId}`);
+  await axiosClient.delete(`/`, {
+    headers: {
+      Authorization: sessionId,
+    },
+  });
 };

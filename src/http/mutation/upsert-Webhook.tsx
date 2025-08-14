@@ -9,8 +9,13 @@ export const upsertWebhook = async ({
   sessionId,
   webhookUrl,
 }: UpsertWebhookProps) => {
-  await axiosClient.post("/set-webhook", {
-    sessionId,
-    webhookUrl,
-  });
+  await axiosClient.patch(
+    "/webhook",
+    { webhookUrl }, 
+    {
+      headers: {
+        Authorization: sessionId, 
+      },
+    }
+  );
 };

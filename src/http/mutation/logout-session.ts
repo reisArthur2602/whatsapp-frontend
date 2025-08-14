@@ -5,5 +5,15 @@ type LogoutSessionProps = {
 };
 
 export const logoutSession = async ({ sessionId }: LogoutSessionProps) => {
-  await axiosClient.patch(`/session/${sessionId}/logout`);
+  await axiosClient.patch(
+    "/disconnect",
+
+    {},
+
+    {
+      headers: {
+        Authorization: sessionId,
+      },
+    }
+  );
 };

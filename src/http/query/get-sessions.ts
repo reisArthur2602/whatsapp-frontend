@@ -8,6 +8,6 @@ type Session = {
 };
 
 export const getSessions = async () => {
-  const sessions = (await axiosClient<Session[] | []>("/sessions")).data;
+  const sessions = (await axiosClient.get<Session[] | []>("/all")).data;
   return sessions;
 };
