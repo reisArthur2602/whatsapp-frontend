@@ -34,6 +34,10 @@ const upsertWebhookSchema = z.object({
   onReceive_webhookUrl: z.url("URL inválida").or(z.literal("")).optional(),
   onSend_webhookUrl: z.url("URL inválida").or(z.literal("")).optional(),
   onUpdateStatus_webhookUrl: z.url("URL inválida").or(z.literal("")).optional(),
+  onChangeSession_webhookUrl: z
+    .url("URL inválida")
+    .or(z.literal(""))
+    .optional(),
 });
 
 type UpsertWebhook = z.infer<typeof upsertWebhookSchema>;
@@ -44,6 +48,7 @@ type UpsertWebHookDialogProps = {
   onReceive_webhookUrl: string | null;
   onSend_webhookUrl: string | null;
   onUpdateStatus_webhookUrl: string | null;
+  onChangeSession_webhookUrl: string | null;
 };
 
 export const UpsertWebHookDialog = ({
@@ -52,6 +57,7 @@ export const UpsertWebHookDialog = ({
   onReceive_webhookUrl,
   onSend_webhookUrl,
   onUpdateStatus_webhookUrl,
+  onChangeSession_webhookUrl,
 }: UpsertWebHookDialogProps) => {
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
@@ -62,6 +68,7 @@ export const UpsertWebHookDialog = ({
       onReceive_webhookUrl: onReceive_webhookUrl || "",
       onSend_webhookUrl: onSend_webhookUrl || "",
       onUpdateStatus_webhookUrl: onUpdateStatus_webhookUrl || "",
+      onChangeSession_webhookUrl: onChangeSession_webhookUrl || "",
     },
   });
 
@@ -82,6 +89,7 @@ export const UpsertWebHookDialog = ({
       onReceive_webhookUrl?: string;
       onSend_webhookUrl?: string;
       onUpdateStatus_webhookUrl: string;
+      onChangeSession_webhookUrl: string;
     };
     const payload = {} as Payload;
 
@@ -93,6 +101,9 @@ export const UpsertWebHookDialog = ({
 
     if (data.onUpdateStatus_webhookUrl)
       payload.onUpdateStatus_webhookUrl = data.onUpdateStatus_webhookUrl;
+
+    if (data.onChangeSession_webhookUrl)
+      payload.onChangeSession_webhookUrl = data.onChangeSession_webhookUrl;
 
     await upsertWebhookFn({
       sessionId,
@@ -161,6 +172,24 @@ export const UpsertWebHookDialog = ({
                   <FormControl>
                     <Input
                       placeholder="https://api.exemplo.com/on-update-status"
+                      {...field}
+                      disabled={isLoading}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={methods.control}
+              name="onChangeSession_webhookUrl"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Ao Atualizar Sessão</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="https://api.exemplo.com/on-change-status"
                       {...field}
                       disabled={isLoading}
                     />

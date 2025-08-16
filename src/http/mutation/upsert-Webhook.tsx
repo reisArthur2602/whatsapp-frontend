@@ -5,6 +5,7 @@ type UpsertWebhookProps = {
   onReceive_webhookUrl?: string;
   onSend_webhookUrl?: string;
   onUpdateStatus_webhookUrl?: string;
+  onChangeSession_webhookUrl?: string;
 };
 
 export const upsertWebhook = async ({
@@ -12,10 +13,16 @@ export const upsertWebhook = async ({
   onReceive_webhookUrl,
   onSend_webhookUrl,
   onUpdateStatus_webhookUrl,
+  onChangeSession_webhookUrl,
 }: UpsertWebhookProps) => {
   await axiosClient.patch(
     "/webhook",
-    { onReceive_webhookUrl, onSend_webhookUrl, onUpdateStatus_webhookUrl },
+    {
+      onReceive_webhookUrl,
+      onSend_webhookUrl,
+      onUpdateStatus_webhookUrl,
+      onChangeSession_webhookUrl,
+    },
     {
       headers: {
         Authorization: sessionId,
